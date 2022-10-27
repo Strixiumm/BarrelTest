@@ -161,4 +161,16 @@ public class GameManager : Singleton<GameManager>
         SaveData.PreviousHighscore = Mathf.Max(SaveData.PreviousHighscore, ((float)destroyedTileCount / tileCount) / minPercent);
         SetGameState(GameState.Lose);
     }
+    
+    public void PauseGame(bool isPaused)
+    {
+        if (isPaused)
+        {
+            Time.timeScale = 0;
+        }
+        else
+        {
+            Time.timeScale = 1;
+        }
+    }
 }

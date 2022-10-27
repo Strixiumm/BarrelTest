@@ -5,26 +5,22 @@ using UnityEngine;
 public class OptionsUI : MonoBehaviour
 {
     [SerializeField]
-    CustomToggle colorblindToggle;
+    List<CustomToggle> colorblindToggles;
     [SerializeField]
-    CustomToggle vibrationToggle;
+    List<CustomToggle> vibrationToggles;
 
-    Animator animator;
-    bool isOpen = false;
     void Awake()
     {
-        animator = GetComponent<Animator>();
-        animator.speed = 1.0f / Time.timeScale;
-        isOpen = false;
-        animator.SetBool("isOpen", isOpen);
-        colorblindToggle.SetEnabled(SaveData.CurrentColorList == 1);
-        vibrationToggle.SetEnabled(SaveData.VibrationEnabled == 1);
-    }
-
-    public void Toggle()
-    {
-        isOpen = !isOpen;
-        animator.SetBool("isOpen", isOpen);
+        foreach (CustomToggle colorblindToggle in colorblindToggles)
+        {
+            colorblindToggle.SetEnabled(SaveData.CurrentColorList == 1);
+            colorblindToggle.SetToogleEvent(OnColorblindClick);
+        }
+        foreach (CustomToggle vibrationToggle in vibrationToggles)
+        {
+            vibrationToggle.SetEnabled(SaveData.VibrationEnabled == 1);
+            vibrationToggle.SetToogleEvent(OnVibrationClick);
+        }
     }
 
     public void OnColorblindClick(bool value)
