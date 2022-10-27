@@ -13,14 +13,15 @@ public class OptionsUI : MonoBehaviour
     {
         foreach (CustomToggle colorblindToggle in colorblindToggles)
         {
-            colorblindToggle.SetEnabled(SaveData.CurrentColorList == 1);
             colorblindToggle.SetToogleEvent(OnColorblindClick);
         }
         foreach (CustomToggle vibrationToggle in vibrationToggles)
         {
-            vibrationToggle.SetEnabled(SaveData.VibrationEnabled == 1);
             vibrationToggle.SetToogleEvent(OnVibrationClick);
         }
+
+        OnColorblindClick(SaveData.CurrentColorList == 1);
+        OnVibrationClick(SaveData.VibrationEnabled == 1);
     }
 
     public void OnColorblindClick(bool value)
@@ -28,6 +29,11 @@ public class OptionsUI : MonoBehaviour
         if (SaveData.CurrentColorList == 1 != value) {
             SaveData.CurrentColorList = value ? 1 : 0;
             TileColorManager.Instance.SetColorList(SaveData.CurrentColorList);
+        }
+
+        foreach (CustomToggle colorblindToggle in colorblindToggles)
+        {
+            colorblindToggle.SetDisplay(value); 
         }
     }
 
@@ -37,6 +43,10 @@ public class OptionsUI : MonoBehaviour
             SaveData.VibrationEnabled = value ? 1 : 0;
             if (value)
                 Handheld.Vibrate();
+        }
+        foreach (CustomToggle vibrationToggle in vibrationToggles)
+        {
+            vibrationToggle.SetDisplay(value); 
         }
     }
 }

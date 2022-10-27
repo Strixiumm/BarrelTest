@@ -33,9 +33,14 @@ public class CustomToggle : MonoBehaviour
     
     public void SetEnabled(bool value)
     {
+        toggleEvent?.Invoke(value);
+    }
+
+    public void SetDisplay(bool value)
+    {
         isEnabled = value;
         enabledObject.SetActive(isEnabled);
         disabledObject.SetActive(!isEnabled);
-        toggleEvent?.Invoke(isEnabled);
     }
+    
 }
