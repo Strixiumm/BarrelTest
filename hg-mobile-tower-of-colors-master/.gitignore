@@ -1,0 +1,16 @@
+.vs*
+*.csproj
+*.unityproj
+*.apk
+*.sln
+*.userprefs
+*.suo
+*.fbm.meta
+/obj
+/Build
+/Library
+/Logs
+Temp/
+.idea/
+desktop.ini
+desktop.ini.meta
