@@ -129,6 +129,7 @@ public class Tower : MonoBehaviour
             yield return new WaitForSeconds(0.075f * Time.timeScale);
             SetFloorActive(i, false, false);
         }
+
         yield return null;
     }
 

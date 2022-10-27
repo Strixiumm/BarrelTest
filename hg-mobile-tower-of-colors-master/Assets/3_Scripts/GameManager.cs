@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 enum GameState
 {
+    GameStart = -1,
     Intro = 0,
     Playing = 1,
     Win = 2,
@@ -19,6 +20,8 @@ public class GameManager : Singleton<GameManager>
     Tower tower;
     [SerializeField]
     PercentCounter percentCounter;
+    [SerializeField]
+    TimerCounter timerCounter;
     [SerializeField]
     BallShooter ballShooter;
     [SerializeField]
@@ -49,7 +52,7 @@ public class GameManager : Singleton<GameManager>
     int tileCount;
     int destroyedTileCount;
     int ballCount;
-    GameState gameState = GameState.Intro;
+    GameState gameState = GameState.GameStart;
 
     private void Awake()
     {
@@ -75,11 +78,21 @@ public class GameManager : Singleton<GameManager>
         ballCountText.text = ballCount.ToString("N0");
         ballShooter.OnBallShot += OnBallShot;
 
-        percentCounter.SetColor(TileColorManager.Instance.GetColor(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount)));
+        Color lvlColor = TileColorManager.Instance.GetColor(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
+        percentCounter.SetColor(lvlColor);
         percentCounter.SetLevel(SaveData.CurrentLevel);
         percentCounter.SetValue(SaveData.PreviousHighscore);
         percentCounter.SetShadowValue(SaveData.PreviousHighscore);
         percentCounter.SetValueSmooth(0f);
+
+        if (RemoteConfig.BOOL_LEVEL_TIMER_ON)
+        {
+            timerCounter.InitTimer(lvlColor);
+        }
+        else
+        {
+            timerCounter.gameObject.SetActive(false);
+        }
     }
 
     void OnBallShot()
@@ -90,8 +103,7 @@ public class GameManager : Singleton<GameManager>
             oneBallRemaining.Play();
         }
         else if (ballCount == 0) {
-            SaveData.PreviousHighscore = Mathf.Max(SaveData.PreviousHighscore, ((float)destroyedTileCount / tileCount) / minPercent);
-            SetGameState(GameState.WaitingLose);
+            WaitingLoseGame();
         }
     }
 
@@ -120,10 +132,33 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    public void StartGame()
+    public void IntroGame()
+    {
+        SetGameState(GameState.Intro);
+    }
+
+    public void PlayingGame()
     {
         SetGameState(GameState.Playing);
         tower.StartGame();
+        if (RemoteConfig.BOOL_LEVEL_TIMER_ON)
+        {
+            timerCounter.StartTimer();
+        }
     }
 
+    private void WaitingLoseGame()
+    {
+        if (RemoteConfig.BOOL_LEVEL_TIMER_ON)
+        {
+            timerCounter.StopTimer();
+        }
+        SetGameState(GameState.WaitingLose);
+    }
+
+    public void LoseGame()
+    {
+        SaveData.PreviousHighscore = Mathf.Max(SaveData.PreviousHighscore, ((float)destroyedTileCount / tileCount) / minPercent);
+        SetGameState(GameState.Lose);
+    }
 }
