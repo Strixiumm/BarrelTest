@@ -48,12 +48,7 @@ public class Tower : MonoBehaviour
             for (int i = 0; i < TileCountPerFloor; i++) {
                 Quaternion direction = Quaternion.AngleAxis(angleStep * i, Vector3.up) * floorRotation;
                 Vector3 position = transform.position + Vector3.up * y * TileHeight + direction * Vector3.forward * towerRadius;
-                TowerTile tileInstance = Instantiate(Random.value > SpecialTileChance ? TilePrefab : SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)], position, direction * TilePrefab.transform.rotation, transform);
-                tileInstance.SetColorIndex(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
-                tileInstance.SetFreezed(true);
-                tileInstance.Floor = y;
-                tileInstance.OnTileDestroyed += OnTileDestroyedCallback;
-                tileInstance.OnTileDestroyed += OnTileDestroyed;
+                TowerTile tileInstance = CreateTowerTile(direction, position,y);
                 tilesByFloor[y].Add(tileInstance);
             }
             floorRotation *= Quaternion.AngleAxis(angleStep / 2.0f, Vector3.up);
@@ -66,6 +61,27 @@ public class Tower : MonoBehaviour
         }
     }
 
+    private TowerTile CreateTowerTile(Quaternion direction, Vector3 position, int floor)
+    {
+        // if there is only explosive barrels in the array, if not we can do something more specific with an enum TypeOf (exploding, other Type Of Barrel)
+        TowerTile tileInstance = Instantiate(AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab, position, direction * TilePrefab.transform.rotation, transform);
+        tileInstance.SetColorIndex(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
+        tileInstance.SetFreezed(true);
+        tileInstance.Floor = floor;
+        tileInstance.OnTileDestroyed += OnTileDestroyedCallback;
+        tileInstance.OnTileDestroyed += OnTileDestroyed;
+        return tileInstance;
+    }
+
+    private bool AllowCreatingExplosiveTile(int floor)
+    {
+        if (RemoteConfig.BOOL_EXPLOSIVE_BARRELS_ENABLED && Random.value <= SpecialTileChance && floor >= RemoteConfig.INT_EXPLOSIVE_BARRELS_MIN_LEVEL)
+        {
+            return true;
+        }
+        return false;
+    }
+    
     public void OnTileDestroyed(TowerTile tile)
     {
         if (maxFloor > PlayableFloors - 1 && tilesByFloor != null) {
