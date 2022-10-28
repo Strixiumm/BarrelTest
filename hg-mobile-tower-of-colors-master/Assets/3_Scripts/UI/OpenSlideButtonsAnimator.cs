@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ScrollingButtons : MonoBehaviour
+public class OpenSlideButtonsAnimator : MonoBehaviour
 {
     Animator animator;
     bool isOpen = false;
@@ -13,7 +13,6 @@ public class ScrollingButtons : MonoBehaviour
         animator.speed = 1.0f / Time.timeScale;
         isOpen = false;
         animator.SetBool("isOpen", isOpen);
-        
     }
 
     public void Toggle()
