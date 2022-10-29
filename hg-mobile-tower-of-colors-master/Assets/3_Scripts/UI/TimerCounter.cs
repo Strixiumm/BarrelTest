@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,9 @@ public class TimerCounter : MonoBehaviour
 
     private float maxTime = RemoteConfig.FLOAT_LEVEL_TIMER_SECONDS;
     private IEnumerator timer;
+    private bool pause = false; // pause of the timer, independant if the game is in pause 
+    // for this case : power up during pause) 
+    // if game is in pause, timer will not be in pause by itself 
     
     public void InitTimer(Color lvlColor)
     {
@@ -37,11 +41,21 @@ public class TimerCounter : MonoBehaviour
         while(normalizedTime > 0f)
         {
             slider.normalizedValue = normalizedTime;
-            normalizedTime -= Time.deltaTime / duration;
+            normalizedTime -= TimerDeltaTime  / duration;
             SetFillColor();
             yield return null;
         }
         TimerComplete();
+    }
+
+    public void SetPause(bool newState)
+    {
+        pause = newState;
+    }
+    
+    private float TimerDeltaTime
+    {
+        get { return pause ? 0 : Time.deltaTime; }
     }
 
     public void StopTimer()

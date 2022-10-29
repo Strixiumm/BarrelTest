@@ -10,7 +10,7 @@ public static class RemoteConfig
     public static bool BOOL_LEVEL_TIMER_ON = true;
     public static float FLOAT_LEVEL_TIMER_SECONDS = 60;
     public static bool BOOL_COLOR_BLIND_ALT_ENABLED = true; 
-    public static bool BOOL_PAUSE_BUTTON_ENABLED = false;//true;
+    public static bool BOOL_PAUSE_BUTTON_ENABLED = true;
     
     // found this data struct to made it more scalable
     public static Dictionary<String,bool> powerUpsEnabled = new Dictionary<String, bool>()

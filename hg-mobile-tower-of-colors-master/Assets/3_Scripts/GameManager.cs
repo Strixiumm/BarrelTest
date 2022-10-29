@@ -173,4 +173,9 @@ public class GameManager : Singleton<GameManager>
             Time.timeScale = 1;
         }
     }
+    
+    public void PauseTimerCounter(bool isPaused)
+    {
+        timerCounter.SetPause(isPaused);
+    }
 }

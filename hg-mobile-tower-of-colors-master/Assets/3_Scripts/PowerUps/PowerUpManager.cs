@@ -19,28 +19,34 @@ public class PowerUpManager : MonoBehaviour
     
     private List<PowerUp> powerUps = new List<PowerUp>();
 
-    private void Start()
+    private void Awake()
     {
         foreach (Transform child in References.ButtonsGroup.transform)
         {
             powerUps.Add(child.gameObject.GetComponentInChildren<PowerUp>());
         }
+        InitPlayerPref();
+    }
 
+    private void Start()
+    {
         InitLockPowerUp();
     }
     
     public void InitLockPowerUp()
     {
         bool isEnabled = false;
-        for (int index = 0; index < powerUps.Count; index++)
+        foreach (PowerUp powerUp in powerUps)
         {
-            if (RemoteConfig.powerUpsEnabled.TryGetValue("POWER_UP_" + GetIntToString(index+1) + "_ENABLED", out isEnabled))
+            if (RemoteConfig.powerUpsEnabled.TryGetValue("POWER_UP_" + powerUp.index + "_ENABLED", out isEnabled))
             {
-                powerUps[index].Lock(isEnabled);
+                powerUp.Lock(isEnabled);
             }
         }
     }
 
+    // at begining I made powerup number based on index, but to be more efficient
+    // and call function from the powerup itself, i put them in powerup element 
     private string GetIntToString(int intToConvert)
     {
         switch (intToConvert)
@@ -49,6 +55,18 @@ public class PowerUpManager : MonoBehaviour
             case 2: return "TWO";
             case 3: return "THREE";
             default: return "";
+        }
+    }
+
+    private void InitPlayerPref()
+    {
+        int leftUses = 0;
+        foreach (PowerUp powerUp in powerUps)
+        {
+            if (RemoteConfig.powerUpsUses.TryGetValue("POWER_UP_" + powerUp.index + "_USES", out leftUses))
+            {
+                SaveData.InitPowerUpLeftUses(powerUp.index, leftUses);
+            }
         }
     }
 }
