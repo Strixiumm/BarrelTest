@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public static class SaveData
@@ -43,6 +44,6 @@ public static class SaveData
     public static void SetPowerUpLeftUsesDown(string powerUseIndex)
     {
         int currentPowerUpLeftUses = PowerUpLeftUses(powerUseIndex);
-        PlayerPrefs.SetInt("PowerUpLeftUses" + powerUseIndex, currentPowerUpLeftUses--);
+        PlayerPrefs.SetInt("PowerUpLeftUses" + powerUseIndex, currentPowerUpLeftUses-1);
     }
 }

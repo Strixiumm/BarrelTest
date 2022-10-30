@@ -11,6 +11,8 @@ public static class RemoteConfig
     public static float FLOAT_LEVEL_TIMER_SECONDS = 60;
     public static bool BOOL_COLOR_BLIND_ALT_ENABLED = true; 
     public static bool BOOL_PAUSE_BUTTON_ENABLED = true;
+
+    public static int POWER_UP_MULTIBALLS_AMOUNT = 5;
     
     // found this data struct to made it more scalable
     public static Dictionary<String,bool> powerUpsEnabled = new Dictionary<String, bool>()

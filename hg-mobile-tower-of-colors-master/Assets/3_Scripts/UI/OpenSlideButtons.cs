@@ -58,4 +58,8 @@ public class OpenSlideButtons : MonoBehaviour
             Toggle();
     }
 
+    private void OnDisable()
+    {
+        Close();
+    }
 }

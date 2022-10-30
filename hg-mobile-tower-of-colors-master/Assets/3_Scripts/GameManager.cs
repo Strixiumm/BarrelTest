@@ -77,6 +77,7 @@ public class GameManager : Singleton<GameManager>
         ballCount = Mathf.FloorToInt(ballToTileRatioPerLevel.Evaluate(SaveData.CurrentLevel) * tileCount);
         ballCountText.text = ballCount.ToString("N0");
         ballShooter.OnBallShot += OnBallShot;
+        ballShooter.OnMultiBallShot += OnMultiBallsShot;
 
         Color lvlColor = TileColorManager.Instance.GetColor(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
         percentCounter.SetColor(lvlColor);
@@ -105,6 +106,11 @@ public class GameManager : Singleton<GameManager>
         else if (ballCount == 0) {
             WaitingLoseGame();
         }
+    }
+
+    void OnMultiBallsShot()
+    {
+        ReelSpeedGame();
     }
 
     void SetGameState(GameState state)
@@ -174,8 +180,28 @@ public class GameManager : Singleton<GameManager>
         }
     }
     
+    public void SlowMoGame()
+    {
+        Time.timeScale = 0.5f;
+    }
+    
+    public void ReelSpeedGame()
+    {
+        Time.timeScale = 1;
+    }
+    
     public void PauseTimerCounter(bool isPaused)
     {
         timerCounter.SetPause(isPaused);
+    }
+
+    public BallShooter GetBallShooter()
+    {
+        return ballShooter;
+    }
+    
+    public Tower GetTower()
+    {
+        return tower;
     }
 }

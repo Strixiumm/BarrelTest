@@ -1167,6 +1167,18 @@ Transform:
   m_Father: {fileID: 1041665864}
   m_RootOrder: 77
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &211052686 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6829646062368199729, guid: 4183d182e03fa4044964713f0e49e9c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1289131535103423947}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &236153415
 GameObject:
   m_ObjectHideFlags: 0
@@ -16263,12 +16275,32 @@ Transform:
   m_Father: {fileID: 1041665864}
   m_RootOrder: 25
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1961185978 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1289131536510265201, guid: 4183d182e03fa4044964713f0e49e9c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 1289131535103423947}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &1961185979 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1289131536510265200, guid: 4183d182e03fa4044964713f0e49e9c1,
     type: 3}
   m_PrefabInstance: {fileID: 1289131535103423947}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1961185980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961185978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1cf15969eaa437bbc07561580e79b55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: ONE
+  usesLeft: {fileID: 211052686}
 --- !u!1 &1963468725
 GameObject:
   m_ObjectHideFlags: 0
@@ -17911,12 +17943,23 @@ PrefabInstance:
       propertyPath: m_Name
       value: PowerUp_1
       objectReference: {fileID: 0}
+    - target: {fileID: 1289131536510265206, guid: 4183d182e03fa4044964713f0e49e9c1,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1961185980}
+    - target: {fileID: 1289131536510265206, guid: 4183d182e03fa4044964713f0e49e9c1,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Launch
+      objectReference: {fileID: 0}
     - target: {fileID: 1289131536510265207, guid: 4183d182e03fa4044964713f0e49e9c1,
         type: 3}
       propertyPath: index
       value: ONE
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1289131536510265207, guid: 4183d182e03fa4044964713f0e49e9c1, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4183d182e03fa4044964713f0e49e9c1, type: 3}
 --- !u!54 &2004615317110142409
 Rigidbody:

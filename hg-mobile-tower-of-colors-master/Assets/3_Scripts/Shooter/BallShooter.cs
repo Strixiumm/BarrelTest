@@ -4,16 +4,20 @@ using UnityEngine;
 
 public class BallShooter : MonoBehaviour
 {
-    [SerializeField]
-    float speed = 60;
+    [SerializeField] protected float speed = 60;
     [SerializeField]
     BallProjectile projectilePrefab;
 
     BallProjectile currentProjectile;
 
     public System.Action OnBallShot;
+    public System.Action OnMultiBallShot;
 
     int lastColor;
+
+    // I start by making inherit (multiballsShooter) but it requires to do refill the prefab,
+    // change the setup of the scene with a second Shooter gameobject or a specific for the multiball
+    private List<BallProjectile> multiProjectiles = new List<BallProjectile>();
 
     private void OnEnable()
     {
@@ -27,6 +31,7 @@ public class BallShooter : MonoBehaviour
         currentProjectile = null;
     }
 
+   
     void InstantiateProjectile()
     {
         if (currentProjectile)
@@ -59,6 +64,38 @@ public class BallShooter : MonoBehaviour
         }
     }
 
+    public void ShootMultiTargets(int nbBalls)
+    {
+        for (int i = 0; i < nbBalls; i++)
+        {
+            TowerTile target = GameManager.Instance.GetTower().GetMultiShootTile(transform.position);
+            if (target == null)
+            {
+                break;// no more target
+            }
+            currentProjectile = Instantiate(projectilePrefab, transform.position, Quaternion.identity, transform);
+            currentProjectile.SetTarget(target);
+            Vector3 targetPosition = currentProjectile.GetTarget().gameObject.transform.position;
+            Vector3 fromTo2D = new Vector3(targetPosition.x - transform.position.x, 0, targetPosition.z - transform.position.z);
+            float angle = 0;
+            LaunchAngle(speed, fromTo2D.magnitude, targetPosition.y - transform.position.y, Physics.gravity.magnitude, out angle);
+            angle *= Mathf.Rad2Deg;
+            currentProjectile.SetVelocity(Quaternion.AngleAxis(angle, -transform.right) * fromTo2D.normalized * speed);
+            currentProjectile.SetColor();
+            currentProjectile.OnBallExplode += OnMultiBallExplode;
+            multiProjectiles.Add(currentProjectile);
+        }
+    }
+    
+    private void OnMultiBallExplode(BallProjectile ballProjectile)
+    {
+        multiProjectiles.Remove(ballProjectile);
+        if (multiProjectiles.Count == 0)
+        {
+            OnMultiBallShot?.Invoke();
+        }
+    }
+    
     // Taken from: https://github.com/IronWarrior/ProjectileShooting
     public bool LaunchAngle(float speed, float distance, float yOffset, float gravity, out float angle)
     {

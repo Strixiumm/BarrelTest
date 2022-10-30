@@ -40,7 +40,7 @@ public class PowerUpManager : MonoBehaviour
         {
             if (RemoteConfig.powerUpsEnabled.TryGetValue("POWER_UP_" + powerUp.index + "_ENABLED", out isEnabled))
             {
-                powerUp.Lock(isEnabled);
+                powerUp.Lock(!isEnabled);
             }
         }
     }

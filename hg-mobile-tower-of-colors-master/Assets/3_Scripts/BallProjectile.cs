@@ -11,6 +11,10 @@ public class BallProjectile : MonoBehaviour
 
     TowerTile target;
 
+    public System.Action<BallProjectile> OnBallExplode;
+
+    private float lifeTime = 2f;
+    
     private void Awake()
     {
         rigidbody = GetComponent<Rigidbody>();
@@ -32,6 +36,11 @@ public class BallProjectile : MonoBehaviour
         SetColor(TileColorManager.Instance.GetColor(ColorIndex));
     }
 
+    public void SetColor()
+    {
+        SetColorIndex(target.ColorIndex);
+    }
+    
     public void SetColor(Color color)
     {
         renderer.sharedMaterial = TileColorManager.GetSharedMaterial(originalMaterial, color);
@@ -48,12 +57,19 @@ public class BallProjectile : MonoBehaviour
         transform.parent = null;
         rigidbody.isKinematic = false;
         rigidbody.AddForce(velocity, ForceMode.VelocityChange);
+        //StartCoroutine(ExplodeAfterTime(lifeTime));
+        Invoke("ExplodeAfterTime", lifeTime);
     }
 
     public void SetTarget(TowerTile target)
     {
         this.target = target;
         GetComponent<Collider>().isTrigger = target.ColorIndex == ColorIndex;
+    }
+
+    public TowerTile GetTarget()
+    {
+        return target;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -67,6 +83,18 @@ public class BallProjectile : MonoBehaviour
 
     public void Explode()
     {
+        if (OnBallExplode != null)
+        {
+            OnBallExplode.Invoke(this);
+        }
+
+        CancelInvoke("ExplodeAfterTime");
         Destroy(this.gameObject);
     }
+    
+    void ExplodeAfterTime()
+    {
+        Explode();
+    }
+    
 }

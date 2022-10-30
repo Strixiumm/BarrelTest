@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Timers;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Tower : MonoBehaviour
 {
@@ -61,6 +63,10 @@ public class Tower : MonoBehaviour
         }
     }
 
+    public float CaculateTowerRadius()
+    {
+        return CaculateTowerRadius(TileRadius * 2, TileCountPerFloor);
+    }
     private TowerTile CreateTowerTile(Quaternion direction, Vector3 position, int floor)
     {
         // if there is only explosive barrels in the array, if not we can do something more specific with an enum TypeOf (exploding, other Type Of Barrel)
@@ -151,4 +157,100 @@ public class Tower : MonoBehaviour
         }
     }
 
+    public TowerTile GetRandomTile()
+    {
+        List<int> listSelectedFloors = new List<int>();
+        for (int i = currentFloor; i < maxFloor; i++)
+        {
+            listSelectedFloors.Add(i);
+        }
+        
+        int selectedFloor = listSelectedFloors[Random.Range (0, listSelectedFloors.Count)];
+        List<TowerTile> listSelectedByFloor = tilesByFloor[selectedFloor];
+
+        return listSelectedByFloor[Random.Range (0, listSelectedByFloor.Count)];
+
+    }
+    
+    
+    public TowerTile GetMultiShootTile(Vector3 sourcePos)
+    {
+        TowerTile target = null;
+        int halfFloor = maxFloor - currentFloor;
+        List<int> listSelectedFloors = new List<int>();
+        for (int i = currentFloor; i <= halfFloor; i++)
+        {
+            listSelectedFloors.Add(i);
+        }
+
+        float tmpRadius = CaculateTowerRadius();
+        while (tmpRadius > 0f)
+        {
+            Vector3 tmpSourcePos = sourcePos;
+            List<int> tempListSelectedFloors = new List<int>(listSelectedFloors);
+            Vector3 dir = CameraTarget.position - tmpSourcePos;
+            dir.y = 0;
+            float dynamicAngle = Mathf.Atan(tmpRadius / Vector3.Distance(CameraTarget.position, tmpSourcePos));
+            dynamicAngle *= Mathf.Rad2Deg;
+            int sign = Random.Range(0, 2) * 2 - 1;
+            dir = Quaternion.Euler(0, sign * dynamicAngle, 0) * dir;
+            //Debug.DrawLine(tmpSourcePos, tmpSourcePos + dir, Color.red, 10f);
+
+            if (TryGetTileOnColumn(ref tmpSourcePos, dir, tempListSelectedFloors, out target))
+            {
+                return target;
+            }
+            
+            dir = Quaternion.Euler(0, -2 * sign * dynamicAngle, 0) * dir;
+            //Debug.DrawLine(tmpSourcePos, tmpSourcePos + dir, Color.green, 10f);
+            tempListSelectedFloors = new List<int>(listSelectedFloors);
+            if (TryGetTileOnColumn(ref tmpSourcePos, dir, tempListSelectedFloors, out target))
+            {
+                return target;
+            }
+            tmpRadius -= TileRadius * 2f;
+        }
+        
+        if (target == null)
+        {
+            target = GetRandomTile();
+        }
+        return target;
+    }
+
+    private bool TryGetTileOnColumn(ref Vector3 tmpSourcePos, Vector3 direction, List<int> listSelectedFloors, out TowerTile target)
+    {
+        while (listSelectedFloors.Count > 0)
+        {
+            GetRandomHeight(ref tmpSourcePos, listSelectedFloors);
+            if (TryRaycastTile(tmpSourcePos, direction, out target))
+            {
+                return true;
+            }
+            //Debug.DrawLine(tmpSourcePos, tmpSourcePos + direction, Color.blue, 10f);
+        }
+        target = null;
+        return false;
+    }
+    
+    private void GetRandomHeight(ref Vector3 tmpSourcePos, List<int> listSelectedFloors)
+    {
+        int selectedFloor = listSelectedFloors[Random.Range (0, listSelectedFloors.Count)];
+        tmpSourcePos.y = transform.position.y + selectedFloor * TileHeight + TileHeight/2f;
+        listSelectedFloors.Remove(selectedFloor);
+    }
+
+    private bool TryRaycastTile(Vector3 source, Vector3 direction, out TowerTile target)
+    {
+        Ray ray = new Ray(source, direction);
+        RaycastHit hit;
+        if (Physics.SphereCast(ray, 0.15f, out hit, 100f, 1, QueryTriggerInteraction.Ignore))
+        {
+            target = hit.collider.GetComponent<TowerTile>();
+            return true;
+        }
+
+        target = null;
+        return false;
+    }
 }
