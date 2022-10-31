@@ -18,6 +18,16 @@ public class ExplodingTile : TowerTile
         base.Awake();
         collider = GetComponent<Collider>();
     }
+    
+    public override void Init(TowerTile tile)
+    {
+        ExplodingTile explo = tile as ExplodingTile;
+        radius = explo.radius;
+        force = explo.force;
+        explosiveTileMaterial = explo.explosiveTileMaterial;
+        base.Init(tile);
+    }
+    
     protected override void OnDestroy()
     {
         if (CameraShakeManager.Instance)
@@ -51,4 +61,6 @@ public class ExplodingTile : TowerTile
             }
         }
     }
+
+  
 }

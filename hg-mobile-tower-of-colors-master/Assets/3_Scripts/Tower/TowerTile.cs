@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class TowerTile : MonoBehaviour
 {
-    [SerializeField]
     protected new MeshRenderer renderer;
-    [SerializeField]
     protected Material originalMaterial;
-    [SerializeField]
     new Rigidbody rigidbody;
     [SerializeField]
     float chainExplodeDelay = 0.1f;
@@ -33,6 +30,20 @@ public class TowerTile : MonoBehaviour
     private bool initialized;
     private bool freezed;
 
+    private bool isInit = false;
+
+    public virtual void Init(TowerTile tile)
+    {
+        chainExplodeDelay = tile.chainExplodeDelay;
+        explosionFx = tile.explosionFx;
+        colorizeFx = tile.colorizeFx;
+        raycastCheckInterval = tile.raycastCheckInterval;
+        waterDamp = tile.waterDamp;
+        originalMaterial = this.gameObject.GetComponent<MeshRenderer>().sharedMaterial;
+        rigidbody = this.gameObject.GetComponent<Rigidbody>();
+        renderer = this.gameObject.GetComponent<MeshRenderer>();
+        isInit = true;
+    }
     protected virtual void Awake()
     {
         TileColorManager.Instance.OnColorListChanged += ResetColor;
@@ -48,27 +59,31 @@ public class TowerTile : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (Active) {
-            if (Time.time > nextCheckTime && rigidbody.velocity.y < -1) {
-                nextCheckTime = Time.time + raycastCheckInterval;
-                if (!Physics.Raycast(rigidbody.worldCenterOfMass, Vector3.down, rigidbody.worldCenterOfMass.y + 1, 1 << 9)) {
-                    Active = false;
-                    OnTileDestroyed?.Invoke(this);
+        if (isInit)
+        {
+            if (Active) {
+                if (Time.time > nextCheckTime && rigidbody.velocity.y < -1) {
+                    nextCheckTime = Time.time + raycastCheckInterval;
+                    if (!Physics.Raycast(rigidbody.worldCenterOfMass, Vector3.down, rigidbody.worldCenterOfMass.y + 1, 1 << 9)) {
+                        Active = false;
+                        OnTileDestroyed?.Invoke(this);
+                    }
                 }
-            }
-        } else if (!freezed) {
-            Vector3 actionPoint = rigidbody.worldCenterOfMass;
-            float forceFactor = 1f - ((actionPoint.y) / 0.5f);
-            if (actionPoint.y < -2.5f) {
-                if (!drifting) {
-                    drifting = true;
-                    rigidbody.angularDrag = 0.1f;
-                    rigidbody.drag = 0.1f;
+            } else if (!freezed) {
+                Vector3 actionPoint = rigidbody.worldCenterOfMass;
+                float forceFactor = 1f - ((actionPoint.y) / 0.5f);
+                if (actionPoint.y < -2.5f) {
+                    if (!drifting) {
+                        drifting = true;
+                        rigidbody.angularDrag = 0.1f;
+                        rigidbody.drag = 0.1f;
+                    }
+                    var uplift = -Physics.gravity * (forceFactor - rigidbody.velocity.y * waterDamp);
+                    rigidbody.AddForceAtPosition(uplift, actionPoint);
                 }
-                var uplift = -Physics.gravity * (forceFactor - rigidbody.velocity.y * waterDamp);
-                rigidbody.AddForceAtPosition(uplift, actionPoint);
             }
         }
+       
     }
 
     private void Reset()

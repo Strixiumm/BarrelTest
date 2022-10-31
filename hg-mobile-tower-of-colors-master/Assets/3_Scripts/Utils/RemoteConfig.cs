@@ -13,6 +13,7 @@ public static class RemoteConfig
     public static bool BOOL_PAUSE_BUTTON_ENABLED = true;
 
     public static int POWER_UP_MULTIBALLS_AMOUNT = 5;
+    public static bool TOWER_BOX_SHAPE_ENABLE = false;
     
     // found this data struct to made it more scalable
     public static Dictionary<String,bool> powerUpsEnabled = new Dictionary<String, bool>()

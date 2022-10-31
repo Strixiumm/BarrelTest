@@ -56,7 +56,7 @@ public class GameUI : MonoBehaviour
             Ray ray = mainCamera.ScreenPointToRay(pointerEventData.position);
             RaycastHit hit;
             if (Physics.SphereCast(ray, 0.15f, out hit, 100f, 1, QueryTriggerInteraction.Ignore)) {
-                TowerTile tile = hit.collider.GetComponent<TowerTile>();
+                TowerTile tile = hit.collider.gameObject.GetComponent<TowerTile>();
                 if (tile && tile.Active)
                     ballShooter.ShootTarget(hit.point, tile);
             }

@@ -57,7 +57,6 @@ public class BallProjectile : MonoBehaviour
         transform.parent = null;
         rigidbody.isKinematic = false;
         rigidbody.AddForce(velocity, ForceMode.VelocityChange);
-        //StartCoroutine(ExplodeAfterTime(lifeTime));
         Invoke("ExplodeAfterTime", lifeTime);
     }
 
@@ -70,7 +69,7 @@ public class BallProjectile : MonoBehaviour
     public TowerTile GetTarget()
     {
         return target;
-    }
+    } 
 
     private void OnTriggerEnter(Collider other)
     {

@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 public class Tower : MonoBehaviour
 {
@@ -16,7 +18,8 @@ public class Tower : MonoBehaviour
     public TowerTile TilePrefab;
     public TowerTile[] SpecialTilePrefabs;
     public bool BuildOnStart = true;
-
+    public List<GameObject> TileShape;
+    
     [Header("Scene")]
     public Transform CameraTarget;
 
@@ -70,22 +73,29 @@ public class Tower : MonoBehaviour
     private TowerTile CreateTowerTile(Quaternion direction, Vector3 position, int floor)
     {
         // if there is only explosive barrels in the array, if not we can do something more specific with an enum TypeOf (exploding, other Type Of Barrel)
-        TowerTile tileInstance = Instantiate(AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab, position, direction * TilePrefab.transform.rotation, transform);
-        tileInstance.SetColorIndex(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
-        tileInstance.SetFreezed(true);
-        tileInstance.Floor = floor;
-        tileInstance.OnTileDestroyed += OnTileDestroyedCallback;
-        tileInstance.OnTileDestroyed += OnTileDestroyed;
-        return tileInstance;
+        // we can made an array based on an enum (box, cylinder) but it's not really scalable if we used this kind of constant
+        GameObject tileGO = Instantiate(RemoteConfig.TOWER_BOX_SHAPE_ENABLE ? TileShape[1] : TileShape[0],  position, direction * TilePrefab.transform.rotation, transform);
+     
+        // if juste add prefab box to a tile, it doens't check the trigger
+        //TowerTile prefab = AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab;
+        TowerTile tile = tileGO.AddComponent(AllowCreatingExplosiveTile(floor)) as TowerTile;
+        tile.Init(tile.GetType()==typeof(ExplodingTile) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab); 
+        tile.SetColorIndex(Mathf.FloorToInt(Random.value * TileColorManager.Instance.ColorCount));
+        tile.SetFreezed(true);
+        tile.Floor = floor;
+        tile.OnTileDestroyed += OnTileDestroyedCallback;
+        tile.OnTileDestroyed += OnTileDestroyed;
+        return tile;
     }
 
-    private bool AllowCreatingExplosiveTile(int floor)
+    private Type AllowCreatingExplosiveTile(int floor)
     {
         if (RemoteConfig.BOOL_EXPLOSIVE_BARRELS_ENABLED && Random.value <= SpecialTileChance && floor >= RemoteConfig.INT_EXPLOSIVE_BARRELS_MIN_LEVEL)
         {
-            return true;
+            return typeof(ExplodingTile);
         }
-        return false;
+
+        return typeof(TowerTile);
     }
     
     public void OnTileDestroyed(TowerTile tile)

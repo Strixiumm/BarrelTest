@@ -9052,7 +9052,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -9064,9 +9064,9 @@ MonoBehaviour:
   m_fontSizeMin: 6
   m_fontSizeMax: 64
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
-  m_textAlignment: 514
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
   m_lineSpacing: 0.6
@@ -11749,11 +11749,14 @@ MonoBehaviour:
   FloorCount: 15
   PlayableFloors: 8
   SpecialTileChance: 0.1
-  TilePrefab: {fileID: -3011388081553121680, guid: b808b351a9dae5a449590253d3050ba5,
+  TilePrefab: {fileID: -4848212621316439324, guid: 3e3355c8535294c82a88f15c405607ed,
     type: 3}
   SpecialTilePrefabs:
   - {fileID: 2847820013253688103, guid: 6f878a0ad2c57a84190d47cbb72f7e14, type: 3}
   BuildOnStart: 0
+  TileShape:
+  - {fileID: 4963163471069255593, guid: b808b351a9dae5a449590253d3050ba5, type: 3}
+  - {fileID: 4963163471069255593, guid: 9d3fba704dc2b46e18abd3154c6159f0, type: 3}
   CameraTarget: {fileID: 1118244258}
 --- !u!4 &1158065173
 Transform:
@@ -16301,6 +16304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   index: ONE
   usesLeft: {fileID: 211052686}
+  cooldown: 0
 --- !u!1 &1963468725
 GameObject:
   m_ObjectHideFlags: 0

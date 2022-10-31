@@ -41,9 +41,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: ca1feb1ce558fc34a99149e0beed48ff, type: 2}
   m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 7984033863786565122, guid: f05a0d6e263638646811ff7f6cee1b0d, type: 3}
 --- !u!1 &4963163471069255593
 GameObject:
@@ -58,9 +58,8 @@ GameObject:
   - component: {fileID: 8650600626305695204}
   - component: {fileID: 913908665645886416}
   - component: {fileID: 2004615318925662448}
-  - component: {fileID: 2847820013253688103}
   m_Layer: 0
-  m_Name: ExplodingTile
+  m_Name: TowerTileShape_Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -103,6 +102,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -137,9 +137,9 @@ MeshCollider:
   m_Material: {fileID: 13400000, guid: ca1feb1ce558fc34a99149e0beed48ff, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 14
+  m_CookingOptions: 30
   m_Mesh: {fileID: 7984033863786565122, guid: f05a0d6e263638646811ff7f6cee1b0d, type: 3}
 --- !u!54 &2004615318925662448
 Rigidbody:
@@ -157,27 +157,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2847820013253688103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4963163471069255593}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4646943d52fc3c4084d767c41f06a0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  renderer: {fileID: 8650600626305695204}
-  originalMaterial: {fileID: 2100000, guid: bbc9d732c763eda49a504d450679c8ba, type: 2}
-  rigidbody: {fileID: 2004615318925662448}
-  chainExplodeDelay: 0.1
-  explosionFx: {fileID: 19849376, guid: a169618806c2e1345b7a3f7b15e05417, type: 3}
-  colorizeFx: 0
-  raycastCheckInterval: 0.25
-  waterDamp: 1
-  radius: 2
-  force: 100
-  explosiveTileMaterial: {fileID: 2100000, guid: 05c289da53795d04289ed73db64d31ec,
-    type: 2}
