@@ -48,12 +48,14 @@ public class Tower : MonoBehaviour
         float towerRadius = CaculateTowerRadius(TileRadius * 2, TileCountPerFloor);
         float angleStep = 360.0f / TileCountPerFloor;
         Quaternion floorRotation = transform.rotation;
+        GameObject shapeGO = RemoteConfig.TOWER_BOX_SHAPE_ENABLE ? TileShape[1] : TileShape[0];
+        float offset = shapeGO.transform.localPosition.y;
         for (int y = 0; y < FloorCount; y++) {
             tilesByFloor.Add(new List<TowerTile>());
             for (int i = 0; i < TileCountPerFloor; i++) {
                 Quaternion direction = Quaternion.AngleAxis(angleStep * i, Vector3.up) * floorRotation;
-                Vector3 position = transform.position + Vector3.up * y * TileHeight + direction * Vector3.forward * towerRadius;
-                TowerTile tileInstance = CreateTowerTile(direction, position,y);
+                Vector3 position = transform.position + Vector3.up * y * TileHeight + Vector3.up * offset + direction * Vector3.forward * towerRadius;
+                TowerTile tileInstance = CreateTowerTile(shapeGO, direction, position,y);
                 tilesByFloor[y].Add(tileInstance);
             }
             floorRotation *= Quaternion.AngleAxis(angleStep / 2.0f, Vector3.up);
@@ -70,11 +72,11 @@ public class Tower : MonoBehaviour
     {
         return CaculateTowerRadius(TileRadius * 2, TileCountPerFloor);
     }
-    private TowerTile CreateTowerTile(Quaternion direction, Vector3 position, int floor)
+    private TowerTile CreateTowerTile(GameObject shapeGO, Quaternion direction, Vector3 position, int floor)
     {
         // if there is only explosive barrels in the array, if not we can do something more specific with an enum TypeOf (exploding, other Type Of Barrel)
         // we can made an array based on an enum (box, cylinder) but it's not really scalable if we used this kind of constant
-        GameObject tileGO = Instantiate(RemoteConfig.TOWER_BOX_SHAPE_ENABLE ? TileShape[1] : TileShape[0],  position, direction * TilePrefab.transform.rotation, transform);
+        GameObject tileGO = Instantiate(shapeGO,  position, direction * TilePrefab.transform.rotation, transform);
      
         // if juste add prefab box to a tile, it doens't check the trigger
         //TowerTile prefab = AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab;
