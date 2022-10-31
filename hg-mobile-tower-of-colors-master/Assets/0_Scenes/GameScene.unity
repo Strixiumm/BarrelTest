@@ -8676,6 +8676,11 @@ PrefabInstance:
       propertyPath: m_Value
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3702901831789741734, guid: df19d4ff549de49f182eb13963a2a7e7,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3702901831817096634, guid: df19d4ff549de49f182eb13963a2a7e7,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -8699,6 +8704,11 @@ PrefabInstance:
     - target: {fileID: 3702901831851168029, guid: df19d4ff549de49f182eb13963a2a7e7,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3702901832214630251, guid: df19d4ff549de49f182eb13963a2a7e7,
+        type: 3}
+      propertyPath: m_RaycastTarget
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
@@ -13953,7 +13963,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
