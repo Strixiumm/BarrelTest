@@ -78,7 +78,7 @@ public class Tower : MonoBehaviour
         // we can made an array based on an enum (box, cylinder) but it's not really scalable if we used this kind of constant
         GameObject tileGO = Instantiate(shapeGO,  position, direction * TilePrefab.transform.rotation, transform);
      
-        // if juste add prefab box to a tile, it doens't check the trigger
+        // if juste add prefab box to a tile, it doesn't check the trigger
         //TowerTile prefab = AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab;
         TowerTile tile = tileGO.AddComponent(AllowCreatingExplosiveTile(floor)) as TowerTile;
         tile.Init(tile.GetType()==typeof(ExplodingTile) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab); 
