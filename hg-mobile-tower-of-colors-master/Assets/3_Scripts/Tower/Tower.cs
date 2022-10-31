@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 public class Tower : MonoBehaviour
@@ -28,14 +29,47 @@ public class Tower : MonoBehaviour
     private int maxFloor = 0;
 
     public System.Action<TowerTile> OnTileDestroyedCallback;
-
+    private List<GameObject> tilesPool;// ObjectPool in unity 2021+
+    
     private void Start()
     {
+        tilesPool = new List<GameObject>();
         if (BuildOnStart) {
             BuildTower();
         }
     }
 
+    public GameObject GetPoolTile()
+    {
+        for (int i = 0; i < tilesPool.Count; i++)
+        {
+            if (!tilesPool[i].activeInHierarchy)
+            {
+                return tilesPool[i];
+            }
+        }
+
+        return null;
+    }
+
+    public void ClearPool()
+    {
+        for (int i = 0; i < tilesPool.Count; i++)
+        {
+            tilesPool[i].SetActive(false);
+        }
+    }
+    
+    public void AddToPool(GameObject tile)
+    {
+        tilesPool.Add(tile);
+        Object.DontDestroyOnLoad(tile);
+    }
+    
+    public void ReturnToPool(GameObject tile)
+    {
+        tile.SetActive(false);
+    }
     public float CaculateTowerRadius(float sideLength, float sideCount)
     {
         return sideLength / (2 * Mathf.Sin(Mathf.Deg2Rad * (180.0f / sideCount)));
@@ -76,7 +110,19 @@ public class Tower : MonoBehaviour
     {
         // if there is only explosive barrels in the array, if not we can do something more specific with an enum TypeOf (exploding, other Type Of Barrel)
         // we can made an array based on an enum (box, cylinder) but it's not really scalable if we used this kind of constant
-        GameObject tileGO = Instantiate(shapeGO,  position, direction * TilePrefab.transform.rotation, transform);
+        GameObject tileGO = GetPoolTile();
+        if (tileGO != null)
+        {
+            tileGO = shapeGO;
+            tileGO.transform.position = position;
+            tileGO.transform.rotation = direction;
+            tileGO.transform.parent = transform;
+        }
+        else
+        {
+            tileGO = Instantiate(shapeGO,  position, direction * TilePrefab.transform.rotation, null);
+            AddToPool(tileGO);
+        }
      
         // if juste add prefab box to a tile, it doesn't check the trigger
         //TowerTile prefab = AllowCreatingExplosiveTile(floor) ? SpecialTilePrefabs[Random.Range(0, SpecialTilePrefabs.Length)] : TilePrefab;

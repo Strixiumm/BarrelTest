@@ -165,6 +165,7 @@ public class GameManager : Singleton<GameManager>
     public void LoseGame()
     {
         SaveData.PreviousHighscore = Mathf.Max(SaveData.PreviousHighscore, ((float)destroyedTileCount / tileCount) / minPercent);
+        tower.ClearPool();
         SetGameState(GameState.Lose);
     }
     
